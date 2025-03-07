@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Delivery‑P</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <style>
+    /* Header with logo and title */
+    .header {
+      background: navy;
+      color: white;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    .header img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+    /* Background and basic styles */
+    body {
+      background: linear-gradient(135deg, #89dadb, #feb47b);
+      font-family: Arial, sans-serif;
+      color: #8a2020;
+      margin: 0;
+      padding-bottom: 60px; /* space for footer */
+    }
+    /* Sidebar */
+    .sidebar {
+      width: 250px;
+      height: 100vh;
+      background: navy;
+      padding: 20px;
+      position: fixed;
+      top: 70px; /* Below header */
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .sidebar button {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 16px;
+      text-align: left;
+      cursor: pointer;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .sidebar button:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+    .sidebar button i {
+      font-size: 20px;
+      transition: transform 0.2s ease, color 0.3s ease;
+    }
+    .sidebar button:hover i {
+      color: #ffcc00;
+      transform: scale(1.1);
+    }
+    /* Main content */
+    .content {
+      margin: 90px 20px 20px 270px;
+      padding: 20px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      min-height: 70vh;
+    }
+    /* Fixed Footer */
+    .footer {
+      background: navy;
+      color: white;
+      width: 100%;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      text-align: center;
+      padding: 10px;
+    }
+    /* OTP styling */
+    .otp-container {
+      display: flex;
+      gap: 10px;
+      margin: 20px 0;
+    }
+    .otp-container input {
+      width: 40px;
+      height: 40px;
+      text-align: center;
+      font-size: 24px;
+      border: 2px solid #ccc;
+      border-radius: 5px;
+    }
+    .timer {
+      font-size: 18px;
+      color: #d9534f;
+      margin-bottom: 10px;
+    }
+    .mail-link {
+      color: #0275d8;
+      text-decoration: none;
+    }
+    .mail-link:hover {
+      text-decoration: underline;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+    #resendBtn {
+      background-color: #5cb85c;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header with logo and title -->
+  <div class="header">
+    <img src="images/Logo.png" alt="Delivery‑P Logo" />
+    <h1>Delivery‑P</h1>
+  </div>
+
+  <!-- Sidebar with icons -->
+  <div class="sidebar">
+    <button onclick="loadContent('createAccount')"><i class="fas fa-user-plus"></i> Create Account</button>
+    <button onclick="loadContent('login')"><i class="fas fa-sign-in-alt"></i> Login</button>
+    <button onclick="loadContent('trackOrder')"><i class="fas fa-truck"></i> Track Order</button>
+    <button onclick="loadContent('cancelOrder')"><i class="fas fa-times-circle"></i> Cancel My Order</button>
+    <button onclick="loadContent('myAccount')"><i class="fas fa-user-cog"></i> My Account</button>
+    <button onclick="loadContent('support')"><i class="fas fa-headset"></i> Support</button>
+    <button onclick="loadContent('adminLogin')"><i class="fas fa-user-shield"></i> Admin/Store Login</button>
+    <button onclick="loadContent('shopLinking')"><i class="fas fa-store"></i> Shop Linking</button>
+    <button onclick="loadContent('walletAccount')"><i class="fas fa-wallet"></i> Wallet Account</button>
+  </div>
+
+  <!-- Main Content -->
+  <div class="content" id="main-content">
+    <h2>Welcome, <span id="username">User</span></h2>
+    <p>Select an option from the sidebar to begin.</p>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    &copy; 2025 Delivery‑P. All rights reserved.
+  </div>
+
+  <script>
+    // Load content based on sidebar button click
+    function loadContent(section) {
+      let content = "";
+      if (section === "createAccount") {
+        content = `
+          <h3>Create Account</h3>
+          <form id="createAccountForm">
+            <div class="mb-2">
+              <label>Full Name:</label>
+              <input type="text" class="form-control" required>
+            </div>
+            <div class="mb-2">
+              <label>Email:</label>
+              <input type="email" class="form-control" id="userEmail" required>
+            </div>
+            <div class="mb-2">
+              <label>Phone Number:</label>
+              <input type="text" class="form-control" id="userPhone" placeholder="+2547XXXXXXXX" required>
+            </div>
+            <div class="mb-2">
+              <label>Password:</label>
+              <input type="password" class="form-control" required>
+            </div>
+            <button type="button" class="btn btn-primary" onclick="verifyEmail()">Verify Email & Send OTP</button>
+            <div id="otpSection" style="display:none;">
+              <h4>OTP Verification</h4>
+              <p>Enter the 6-digit OTP sent to your email/phone.</p>
+              <div class="otp-container">
+                <input type="text" maxlength="1" id="otp1" placeholder="-" />
+                <input type="text" maxlength="1" id="otp2" placeholder="-" />
+                <input type="text" maxlength="1" id="otp3" placeholder="-" />
+                <input type="text" maxlength="1" id="otp4" placeholder="-" />
+                <input type="text" maxlength="1" id="otp5" placeholder="-" />
+                <input type="text" maxlength="1" id="otp6" placeholder="-" />
+              </div>
+              <div class="timer">
+                Resend OTP in: <span id="otp-timer">02:00</span>
+              </div>
+              <a class="mail-link" href="https://mail.google.com" target="_blank">Check your mail</a>
+              <br />
+              <button id="resendBtn" disabled onclick="resendOTP()">Resend OTP</button>
+            </div>
+            <button type="submit" class="btn btn-success mt-2">Create Account</button>
+          </form>`;
+      } else if (section === "login") {
+        content = `
+          <h3>Login</h3>
+          <form>
+            <div class="mb-2">
+              <label>Email:</label>
+              <input type="email" class="form-control" required>
+            </div>
+            <div class="mb-2">
+              <label>Password:</label>
+              <input type="password" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
+          </form>`;
+      } else if (section === "trackOrder") {
+        content = `
+          <h3>Track Order</h3>
+          <p>Enter your Order ID to track your order:</p>
+          <input type="text" class="form-control mb-2" placeholder="Order ID" required>
+          <button class="btn btn-success">Track Order</button>`;
+      } else if (section === "cancelOrder") {
+        content = `
+          <h3>Cancel My Order</h3>
+          <p>Enter your Order ID to cancel your order:</p>
+          <input type="text" class="form-control mb-2" placeholder="Order ID" required>
+          <button class="btn btn-danger">Cancel Order</button>`;
+      } else if (section === "myAccount") {
+        content = `
+          <h3>My Account</h3>
+          <form>
+            <div class="mb-2">
+              <label>Full Name:</label>
+              <input type="text" class="form-control" value="John Doe" required>
+            </div>
+            <div class="mb-2">
+              <label>Email:</label>
+              <input type="email" class="form-control" value="john@example.com" required>
+            </div>
+            <div class="mb-2">
+              <label>Phone Number:</label>
+              <input type="text" class="form-control" value="+1234567890" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Update Profile</button>
+          </form>`;
+      } else if (section === "support") {
+        content = `
+          <h3>Support Chat</h3>
+          <div style="height:300px; overflow-y:auto; border: 1px solid #ccc; padding: 10px;" id="chat-window">
+            <!-- Chat messages appear here -->
+          </div>
+          <form id="chatForm">
+            <div class="input-group">
+              <input type="text" class="form-control" placeholder="Type your message..." id="chatMessage" required>
+              <button type="submit" class="btn btn-info">Send</button>
+            </div>
+          </form>`;
+        setTimeout(() => {
+          document.getElementById("chatForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+            const message = document.getElementById("chatMessage").value;
+            const chatWindow = document.getElementById("chat-window");
+            const newMsg = document.createElement("div");
+            newMsg.textContent = message;
+            chatWindow.appendChild(newMsg);
+            document.getElementById("chatMessage").value = "";
+          });
+        }, 0);
+      } else if (section === "adminLogin") {
+        content = `
+          <h3>Admin/Store Login</h3>
+          <form>
+            <div class="mb-2">
+              <label>Admin Email:</label>
+              <input type="email" class="form-control" required>
+            </div>
+            <div class="mb-2">
+              <label>Password:</label>
+              <input type="password" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
+          </form>`;
+      } else if (section === "shopLinking") {
+        content = `
+          <h3>Shop Linking</h3>
+          <form>
+            <div class="mb-2">
+              <label>Shop Name:</label>
+              <input type="text" class="form-control" required>
+            </div>
+            <div class="mb-2">
+              <label>Admin Email:</label>
+              <input type="email" class="form-control" required>
+            </div>
+            <div class="mb-2">
+              <label>Admin Phone:</label>
+              <input type="text" class="form-control" required>
+            </div>
+            <div class="mb-2">
+              <label>Shop Location:</label>
+              <input type="text" class="form-control" required>
+            </div>
+            <div class="mb-2">
+              <label>Shop Type:</label>
+              <select class="form-control" required>
+                <option>Electronic</option>
+                <option>Food & Vegetables</option>
+                <option>Animal Feeds</option>
+                <option>Pets</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-success">Link Shop</button>
+          </form>`;
+      } else if (section === "walletAccount") {
+        content = `
+          <h3>Wallet Account</h3>
+          <p><strong>Available Balances:</strong></p>
+          <ul>
+            <li>KSH: 10,000</li>
+            <li>TSH: 15,000</li>
+            <li>UGX: 20,000</li>
+            <li>USD: 100</li>
+          </ul>
+          <div class="mb-2">
+            <button class="btn btn-success" onclick="deposit()">Deposit</button>
+            <button class="btn btn-warning" onclick="withdraw()">Withdraw</button>
+          </div>
+          <h4>Statement History</h4>
+          <table class="table table-striped text-dark">\n            <thead>\n              <tr>\n                <th>Date</th>\n                <th>Description</th>\n                <th>Amount</th>\n              </tr>\n            </thead>\n            <tbody>\n              <tr>\n                <td>2025-01-01</td>\n                <td>Deposit</td>\n                <td>+1000</td>\n              </tr>\n              <tr>\n                <td>2025-01-05</td>\n                <td>Withdraw</td>\n                <td>-500</td>\n              </tr>\n            </tbody>\n          </table>`;
+      } else {
+        content = `<h3>Welcome to Delivery‑P</h3><p>Select an option from the sidebar.</p>`;
+      }
+      document.getElementById("main-content").innerHTML = content;
+    }
+
+    // Function to simulate sending OTP to the provided email/phone for createAccount
+    function verifyEmail() {
+      const email = document.getElementById("userEmail").value;
+      const phone = document.getElementById("userPhone").value;
+      if (!email || !phone) {
+        alert("Please enter a valid email and phone number.");
+        return;
+      }
+      alert("OTP has been sent to " + email + " and " + phone);
+      document.getElementById("otpSection").style.display = "block";
+      startCountdown();
+      document.getElementById("otp1").focus();
+      setupOtpAutoFocus();
+    }
+
+    // Setup auto-focus for OTP input boxes
+    function setupOtpAutoFocus() {
+      const inputs = document.querySelectorAll(".otp-container input");
+      inputs.forEach((input, index) => {
+        input.addEventListener("input", () => {
+          if (input.value.length === input.maxLength && index < inputs.length - 1) {
+            inputs[index + 1].focus();
+          }
+        });
+        input.addEventListener("keydown", (e) => {
+          if (e.key === "Backspace" && input.value === "" && index > 0) {
+            inputs[index - 1].focus();
+          }
+        });
+      });
+    }
+
+    // Countdown timer for OTP resend
+    function startCountdown() {
+      let timeLeft = 120; // 2 minutes in seconds
+      const timerElement = document.getElementById("otp-timer");
+      const resendBtn = document.getElementById("resendBtn");
+      resendBtn.disabled = true;
+      const timerInterval = setInterval(() => {
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        timerElement.textContent = `${minutes < 10 ? "0" + minutes : minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          timerElement.textContent = "00:00";
+          resendBtn.disabled = false;
+        }
+        timeLeft--;
+      }, 1000);
+    }
+
+    // Function to simulate resending OTP and restarting the countdown
+    function resendOTP() {
+      alert("A new OTP has been sent to your email.");
+      startCountdown();
+    }
+
+    // Dummy functions for wallet actions
+    function deposit() {
+      alert("Deposit functionality coming soon!");
+    }
+    function withdraw() {
+      alert("Withdraw functionality coming soon!");
+    }
+  </script>
+</body>
+</html>
